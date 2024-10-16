@@ -29,19 +29,13 @@ platforms:
     build-for: [amd64]
 
 apps:
-  mc-server-installer:
-    command: mc-server-installer
-    plugs:
-      - network
-      - home
-      - network-bind
   part-os-release:
-    command: bin/run.sh
+    command: daemon
     daemon: simple
 
 parts:
   mc-server-installer:
-    source: https://github.com/kz6fittycent/mc-server-installer
+    source: https://github.com/jds11235/mc-server-installer
     source-type: git
     plugin: nil
     
