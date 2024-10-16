@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# ARCH VARIABLES
+
+if [ "$SNAP_ARCH" = "amd64" ]; then
+  ARCH="x86_64-linux-gnu"
+elif [ "$SNAP_ARCH" = "armhf" ]; then
+  ARCH="arm-linux-gnueabihf"
+else
+  ARCH="$SNAP_ARCH-linux-gnu"
+fi
+
+# DEFINE LATEST JAR
+LATEST=`curl -fsSL 'https://launchermeta.mojang.com/mc/game/version_manifest.json' |jq -r '.latest.release'`
+
+# DEFINE URL
+MANIFEST_URL=`curl -fsSL 'https://launchermeta.mojang.com/mc/game/version_manifest.json' |jq -r '.versions[] |select(.id=="'"$LATEST"'") |.url'`
+
+# URL CONT'D
+JAR_URL=`curl -fsSL "$MANIFEST_URL" |jq -r '.downloads.server.url'`
+
+# java paths
+export JAVA_HOME=$SNAP/usr/lib/jvm/java-1.21.0-openjdk-$SNAP_ARCH
+export PATH=$JAVA_HOME/bin:$JAVA_HOME/jre/bin:$PATH
+
+cd $SNAP_USER_DATA
+
+curl -so server.jar $JAR_URL 
+java -Xmx8192M -Xms128M -XX:+UseG1GC -jar server.jar nogui       
+
+exit 0
