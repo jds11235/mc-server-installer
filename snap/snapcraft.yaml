@@ -35,6 +35,9 @@ apps:
       - network
       - home
       - network-bind
+  part-os-release:
+    command: bin/run.sh
+    daemon: simple
 
 parts:
   mc-server-installer:
